@@ -1,14 +1,21 @@
 package com.alexspayne.graph;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Random;
 
 public class GraphRunner {
 
 	public static void main(String[] args) {
 
-		Graph graph = generateGraph(10, 30);	
-
+		Graph graph = generateGraph(5, 8);	
+//		for (int s = 0; s < graph.edgeSpace.size(); s++) {
+//			System.out.println(graph.edgeSpace.get(s).label + " " + graph.edgeSpace.get(s).endPoints[0].degree);
+//		}
+//		Collections.sort(graph.edgeSpace, new CustomComparator());
+//		for (int s = 0; s < graph.edgeSpace.size(); s++) {
+//			System.out.println(graph.edgeSpace.get(s).label + " " + graph.edgeSpace.get(s).endPoints[0].degree);
+//		}
 		graph.listEdges();
 		graph.listVertices();
 	}
@@ -60,6 +67,7 @@ public class GraphRunner {
 	 */
 	private static void populateEdgeEndPoints(Vertex[] v, ArrayList<Edge> e, int type) {
 		//each edge in e is assigned end points by iterating through v.
+
 		int i = 0;
 		int numEdges = (v.length * ( v.length - 1))/2;
 		ArrayList<Edge> allEdges = generateEdges(numEdges);
@@ -78,8 +86,6 @@ public class GraphRunner {
 			int z = 0;
 			for (int j = 0; j < e.size(); j++) {
 				//this will randomly select edges from the complete graph
-				//
-				
 			}
 		}
 		else 
@@ -94,8 +100,8 @@ public class GraphRunner {
 			{
 				rCompensation = 1;
 			}
-			int averageDegrees = totalDegrees / (v.length - remainderDegrees);
-			System.out.println(averageDegrees);
+			int averageDegree = (totalDegrees - remainderDegrees)/ v.length;
+			System.out.println("Average degree: " + averageDegree);
 			for (int j = 0; j < e.size(); j++) {
 				//this will randomly select edges from the complete graph
 				//Also, the degrees of the vertices will have an even distribution
@@ -117,13 +123,14 @@ public class GraphRunner {
 				String toRemove2 = allEdges.get(z).endPoints[1].label;
 				int currentVertexDegree2 = allEdges.get(z).endPoints[1].degree;
 				allEdges.remove(z);
-				
-				if(currentVertexDegree >= averageDegrees + rCompensation){
-					
+
+				if(currentVertexDegree >= averageDegree + rCompensation){
+
 					for (int k = 0; k < allEdges.size(); k++) {
 						if(toRemove.equals(allEdges.get(k).endPoints[0].label)||
 								toRemove.equals(allEdges.get(k).endPoints[1].label)){
 							allEdges.remove(k);
+							k--;
 							remainderDegrees --;
 							if (remainderDegrees <= 0) {
 								rCompensation = 0;
@@ -131,20 +138,19 @@ public class GraphRunner {
 						}
 					}
 				}
-				if(currentVertexDegree2 >= averageDegrees + rCompensation){
+				if(currentVertexDegree2 >= averageDegree + rCompensation){
 					for (int k = 0; k < allEdges.size(); k++) {
 						if(toRemove2.equals(allEdges.get(k).endPoints[0].label)||
 								toRemove2.equals(allEdges.get(k).endPoints[1].label)){
 							allEdges.remove(k);
 							remainderDegrees --;
+							k--;
 							if (remainderDegrees <= 0) {
 								rCompensation = 0;
 							}
 						}
 					}
 				}
-				
-				
 			}
 		}
 	}
