@@ -1,23 +1,26 @@
 package com.alexspayne.graph;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Random;
+
+import com.alexspayne.graphics.DrawGraph;
 
 public class GraphRunner {
 
 	public static void main(String[] args) {
 
 		Graph graph = generateGraph(5, 8);	
-//		for (int s = 0; s < graph.edgeSpace.size(); s++) {
-//			System.out.println(graph.edgeSpace.get(s).label + " " + graph.edgeSpace.get(s).endPoints[0].degree);
-//		}
-//		Collections.sort(graph.edgeSpace, new CustomComparator());
-//		for (int s = 0; s < graph.edgeSpace.size(); s++) {
-//			System.out.println(graph.edgeSpace.get(s).label + " " + graph.edgeSpace.get(s).endPoints[0].degree);
-//		}
+		//		for (int s = 0; s < graph.edgeSpace.size(); s++) {
+		//			System.out.println(graph.edgeSpace.get(s).label + " " + graph.edgeSpace.get(s).endPoints[0].degree);
+		//		}
+		//		Collections.sort(graph.edgeSpace, new CustomComparator());
+		//		for (int s = 0; s < graph.edgeSpace.size(); s++) {
+		//			System.out.println(graph.edgeSpace.get(s).label + " " + graph.edgeSpace.get(s).endPoints[0].degree);
+		//		}
 		graph.listEdges();
 		graph.listVertices();
+		DrawGraph applet = new DrawGraph();
+//		applet.runGraphApplet();
 	}
 
 	private static Graph generateGraph(int vn, int en) {
@@ -92,64 +95,105 @@ public class GraphRunner {
 		{
 			int totalDegrees = e.size() * 2;
 			int remainderDegrees = totalDegrees % v.length;
-			int rCompensation;
-			if (remainderDegrees == 0) {
-				rCompensation = 0;
-			}
-			else
-			{
-				rCompensation = 1;
-			}
 			int averageDegree = (totalDegrees - remainderDegrees)/ v.length;
 			System.out.println("Average degree: " + averageDegree);
+			System.out.println("Remainder: " + remainderDegrees);
+			System.out.println("totalDegrees: " + totalDegrees);
 			for (int j = 0; j < e.size(); j++) {
 				//this will randomly select edges from the complete graph
 				//Also, the degrees of the vertices will have an even distribution
+
 				Random r = new Random();
 				int z = 0;
 				try {
 					z = r.nextInt(allEdges.size());
 				} catch (Exception e1) {
-					System.out.println("Random Error");
-					e1.printStackTrace();
+//					System.out.println("Random Error: No edges left");
 				}	
-				e.get(j).endPoints[0]=allEdges.get(z).endPoints[0];
-				e.get(j).endPoints[1]=allEdges.get(z).endPoints[1];
-				
-				allEdges.get(z).endPoints[0].degree ++;
-				allEdges.get(z).endPoints[1].degree ++;
-				String toRemove = allEdges.get(z).endPoints[0].label;
-				int currentVertexDegree = allEdges.get(z).endPoints[0].degree;
-				String toRemove2 = allEdges.get(z).endPoints[1].label;
-				int currentVertexDegree2 = allEdges.get(z).endPoints[1].degree;
-				allEdges.remove(z);
 
-				if(currentVertexDegree >= averageDegree + rCompensation){
-
-					for (int k = 0; k < allEdges.size(); k++) {
-						if(toRemove.equals(allEdges.get(k).endPoints[0].label)||
-								toRemove.equals(allEdges.get(k).endPoints[1].label)){
-							allEdges.remove(k);
-							k--;
-							remainderDegrees --;
-							if (remainderDegrees <= 0) {
-								rCompensation = 0;
-							}
-						}
-					}
+				Graph stepGraph = new Graph(v, allEdges);
+				stepGraph.listVertices();
+				try {
+					stepGraph.listEdges();
+				} catch (Exception e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
 				}
-				if(currentVertexDegree2 >= averageDegree + rCompensation){
-					for (int k = 0; k < allEdges.size(); k++) {
-						if(toRemove2.equals(allEdges.get(k).endPoints[0].label)||
-								toRemove2.equals(allEdges.get(k).endPoints[1].label)){
-							allEdges.remove(k);
-							remainderDegrees --;
-							k--;
-							if (remainderDegrees <= 0) {
-								rCompensation = 0;
+				System.out.println("------------------");
+				//This is to disallow a edge from being selected that would
+				//let the difference of degree of any two vertices to be 
+				//greater than 1
+				if(allEdges.size() != 0){
+					while(allEdges.get(z).endPoints[0].degree == averageDegree && 
+							allEdges.get(z).endPoints[1].degree == averageDegree && 
+							remainderDegrees <=1){
+						System.out.println(allEdges.get(z).label + ": " + "<" + 
+								allEdges.get(z).endPoints[0].label + 
+								", " + allEdges.get(z).endPoints[1].label  + "> Removed");
+						allEdges.remove(z);
+						z = r.nextInt(allEdges.size());
+					}
+					e.get(j).endPoints[0]=allEdges.get(z).endPoints[0];
+					e.get(j).endPoints[1]=allEdges.get(z).endPoints[1];
+
+					allEdges.get(z).endPoints[0].degree ++;
+					allEdges.get(z).endPoints[1].degree ++;
+					String toRemove = allEdges.get(z).endPoints[0].label;
+					int currentVertexDegree = allEdges.get(z).endPoints[0].degree;
+					String toRemove2 = allEdges.get(z).endPoints[1].label;
+					int currentVertexDegree2 = allEdges.get(z).endPoints[1].degree;
+					System.out.println(allEdges.get(z).label + ": " + "<" + 
+							allEdges.get(z).endPoints[0].label + 
+							", " + allEdges.get(z).endPoints[1].label  + "> Removed");
+					allEdges.remove(z);
+					if(currentVertexDegree == averageDegree){
+						if (remainderDegrees <= 0) {
+							for (int k = 0; k < allEdges.size(); k++) {					
+								if(toRemove.equals(allEdges.get(k).endPoints[0].label)||
+										toRemove.equals(allEdges.get(k).endPoints[1].label)){
+									//this removes all remaining edges that include the current vertex
+									//in their list of endpoints.
+									System.out.println(allEdges.get(k).label + ": " + "<" + 
+											allEdges.get(k).endPoints[0].label + 
+											", " + allEdges.get(k).endPoints[1].label  + "> Removed");
+									allEdges.remove(k);
+									k--;
+									remainderDegrees --;
+								}
 							}
 						}
+						else 
+						{
+							remainderDegrees --;
+						}
 					}
+					if(currentVertexDegree2 == averageDegree){
+						if (remainderDegrees <= 0) {
+							for (int k = 0; k < allEdges.size(); k++) {
+
+								if(toRemove2.equals(allEdges.get(k).endPoints[0].label)||
+										toRemove2.equals(allEdges.get(k).endPoints[1].label)){
+									System.out.println(allEdges.get(k).label + ": " + "<" + 
+											allEdges.get(k).endPoints[0].label + 
+											", " + allEdges.get(k).endPoints[1].label  + "> Removed");
+									allEdges.remove(k);
+									remainderDegrees --;
+									k--;
+								}
+							}
+						}
+						else 
+						{
+							remainderDegrees --;
+						}
+					} 
+				}
+				else
+				{
+					System.out.println("All possible edges were eliminated before "
+							+ "generating the desired amount of edges!");
+					e.remove(j);
+					j--;
 				}
 			}
 		}

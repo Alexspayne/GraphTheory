@@ -14,13 +14,23 @@ public class Graph {
 	public void listEdges() {
 		System.out.println("Edges: ");
 		for (int i = 0; i < this.edgeSpace.size(); i++) {
-			System.out.println(this.edgeSpace.get(i).label + 
-					": <" + 
-					this.edgeSpace.get(i).endPoints[0].label + 
-					", " + 
-					this.edgeSpace.get(i).endPoints[1].label +
-					">,");
+//			try {
+				System.out.print(this.edgeSpace.get(i).label + 
+						": <" + 
+						this.edgeSpace.get(i).endPoints[0].label + 
+						", " + 
+						this.edgeSpace.get(i).endPoints[1].label +
+						">");
+				if(i < this.edgeSpace.size() -1){
+					System.out.println(",");
+				};
+//			} catch (Exception e) {
+//				System.out.print(this.edgeSpace.get(i).label + 
+//						": " + 
+//						this.edgeSpace.get(i).endPoints[0]);
+//			}
 		}
+		System.out.println();
 	}
 	public void listVertices() {
 		System.out.println("Vertices:");
