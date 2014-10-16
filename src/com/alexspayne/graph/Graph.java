@@ -46,4 +46,32 @@ public class Graph {
 		System.out.println("sumOfDegrees: " + sumOfDegrees);
 
 	}
+
+	/**
+	 * @return the edgeSpace
+	 */
+	public ArrayList<Edge> getEdgeSpace() {
+		return edgeSpace;
+	}
+
+	/**
+	 * @param edgeSpace the edgeSpace to set
+	 */
+	public void setEdgeSpace(ArrayList<Edge> edgeSpace) {
+		this.edgeSpace = edgeSpace;
+	}
+
+	/**
+	 * @return the vertexSpace
+	 */
+	public Vertex[] getVertexSpace() {
+		return vertexSpace;
+	}
+
+	/**
+	 * @param vertexSpace the vertexSpace to set
+	 */
+	public void setVertexSpace(Vertex[] vertexSpace) {
+		this.vertexSpace = vertexSpace;
+	}
 }
